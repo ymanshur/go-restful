@@ -10,9 +10,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    environment: 
-      name: production
-      url: https://github.com
+    environment: production
     steps:
     - uses: actions/checkout@v3
 
@@ -20,6 +18,17 @@ jobs:
       uses: actions/setup-go@v3
       with:
         go-version: 1.19
+        
+    - name: Create .env file
+      run: |
+        touch .env
+        echo APP_PORT=$APP_PORT >> .env
+        echo DB_USER=$DB_USER >> .env
+        echo DB_PASS=$DB_PASS >> .env
+        echo DB_HOST=$DB_HOST >> .env
+        echo DB_PORT=$DB_PORT >> .env
+        echo DB_NAME=$DB_NAME >> .env
+        echo JWT_SECRET=$JWT_SECRET >> .env
 
     - name: Build
       run: make build
