@@ -4,6 +4,16 @@
 *.dll
 *.so
 *.dylib
+*.air.toml
+
+# Environment files
+*.env
+
+# Log files
+*.log
+
+# Secrete files
+*.sec
 
 # Test binary, built with `go test -c`
 *.test
@@ -13,3 +23,6 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# VS Code files
+agmc.code-workspace
