@@ -16,14 +16,14 @@ services:
       DB_HOST: host.docker.internal
       DB_NAME: ${DB_NAME:?err}
 
-  app_db:
-    extends:
-      file: docker-compose.db.yml
-      service: db
-    container_name: go-restful_db
+  # app_db:
+  #   extends:
+  #     file: docker-compose.db.yml
+  #     service: db
+  #   container_name: go-restful_db
 
-  app_db_adminer:
-    extends:
-      file: docker-compose.db.yml
-      service: adminer
-    container_name: go-restful_db_adminer
+  # app_db_adminer:
+  #   extends:
+  #     file: docker-compose.db.yml
+  #     service: adminer
+  #   container_name: go-restful_db_adminer
