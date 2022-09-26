@@ -22,13 +22,13 @@ jobs:
     - name: Create .env file
       run: |
         touch .env
-        echo APP_PORT=${{ env.APP_PORT }} >> .env
-        echo DB_USER=${{ env.DB_USER }} >> .env
-        echo DB_PASS=${{ env.DB_PASS }} >> .env
-        echo DB_HOST=${{ env.DB_HOST }} >> .env
-        echo DB_PORT=${{ env.DB_PORT }} >> .env
-        echo DB_NAME=${{ env.DB_NAME }} >> .env
-        echo JWT_SECRET=${{ env.JWT_SECRET }} >> .env
+        echo APP_PORT=${{ secrets.APP_PORT }} >> .env
+        echo DB_USER=${{ secrets.DB_USER }} >> .env
+        echo DB_PASS=${{ secrets.DB_PASS }} >> .env
+        echo DB_HOST=${{ secrets.DB_HOST }} >> .env
+        echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+        echo DB_NAME=${{ secrets.DB_NAME }} >> .env
+        echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
 
     - name: Build
       run: make build
