@@ -29,9 +29,9 @@ jobs:
         echo DB_PORT=${{ secrets.DB_PORT }} >> .env
         echo DB_NAME=${{ secrets.DB_NAME }} >> .env
         echo JWT_SECRET=${{ secrets.JWT_SECRET }} >> .env
-
-    - name: Build
-      run: make build
-
+        
     - name: Test
-      run: make test
+      run: go test -v ./...
+
+    - name: Build docker image
+      run: make build
