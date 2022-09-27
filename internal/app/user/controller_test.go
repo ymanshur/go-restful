@@ -48,7 +48,8 @@ func TestGetSuccess(t *testing.T) {
 	ctx := e.NewContext(req, rec)
 	ctx.SetParamNames("id")
 	ctx.SetParamValues("1")
-	database.Seed(db, model.User{})
+	defer database.Drop(db, model.User{})
+	database.Load(db, model.User{})
 	db.Create(&mockData)
 
 	// Assertions
@@ -84,7 +85,8 @@ func TestUpdateSuccess(t *testing.T) {
 	ctx := e.NewContext(req, rec)
 	ctx.SetParamNames("id")
 	ctx.SetParamValues("1")
-	database.Seed(db, model.User{})
+	defer database.Drop(db, model.User{})
+	database.Load(db, model.User{})
 	db.Create(&mockData)
 
 	// Assertions
@@ -120,7 +122,8 @@ func TestDeleteSuccess(t *testing.T) {
 	ctx := e.NewContext(req, rec)
 	ctx.SetParamNames("id")
 	ctx.SetParamValues("1")
-	database.Seed(db, model.User{})
+	defer database.Drop(db, model.User{})
+	database.Load(db, model.User{})
 	db.Create(&mockData)
 
 	// Assertions
@@ -150,7 +153,8 @@ func TestGetAllSuccess(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, baseURL, nil)
 	rec := httptest.NewRecorder()
 	ctx := e.NewContext(req, rec)
-	database.Seed(db, model.User{})
+	defer database.Drop(db, model.User{})
+	database.Load(db, model.User{})
 	db.Create(&mockData)
 
 	// Assertions

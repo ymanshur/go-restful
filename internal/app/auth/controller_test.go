@@ -50,7 +50,8 @@ func TestSignUpSuccess(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	ctx := e.NewContext(req, rec)
-	database.Seed(db, model.User{})
+	defer database.Drop(db, model.User{})
+	database.Load(db, model.User{})
 
 	// Assertions
 	if assert.NoError(t, c.SignUp(ctx)) {
@@ -68,7 +69,8 @@ func TestSignUpUnprocessableEntity(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	ctx := e.NewContext(req, rec)
-	database.Seed(db, model.User{})
+	defer database.Drop(db, model.User{})
+	database.Load(db, model.User{})
 
 	// Assertions
 	if assert.NoError(t, c.SignUp(ctx)) {
@@ -86,7 +88,8 @@ func TestSignInSuccess(t *testing.T) {
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
 	ctx := e.NewContext(req, rec)
-	database.Seed(db, model.User{})
+	defer database.Drop(db, model.User{})
+	database.Load(db, model.User{})
 	db.Create(&mockData)
 
 	// Assertions
