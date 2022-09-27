@@ -11,6 +11,7 @@ Notable features:
 
 ### Setup
 1. Create `.env` config file, look at [.env.example](./.env.example) for mandatory *key-value*
+
 2. Build app using `docker`
 
     ```bash
@@ -21,7 +22,7 @@ Notable features:
     ```bash
     docker-compose build
     ```
-    or just *up* published docker image (means [Docker Hub](https://hub.docker.com/)) using following [docker-compose.yml](docker-compose.client.yml) file
+    or just *up* published docker image using following [docker-compose.yml](docker-compose.client.yml) file
 
     ```
     version: "3.7"
@@ -40,6 +41,8 @@ Notable features:
             DB_HOST: host.docker.internal
             DB_NAME: ${DB_NAME:?err}
     ```
+    Note:
+    - `host.docker.internal` means app will access your local machine host
 
 3. You can *up* existing db image such as mysql (officialy exist at Github Hub registry) and use it for database, but its optional. You can write your own service or extend from [docker-compose.db.yml](docker-compose.db.yml).
 
@@ -70,12 +73,20 @@ Notable features:
 
 ### Testing
 
+- Firstly, you should create `.env.test` file (see [.env.test.example](.env.test.example) for mandatory *key-value*).
+
+- If you have not database in you machine, you can use containerized database for testing by run following command. 
+
+    ```bash
+    docker compose -f docker-compose.test.yml --env-file .env.test up -d
+    ```
+
 - Do functional test using following command
 
     ```bash
     make test
     ```
-- To show in html mode, use
+    To show in html mode, use
 
     ```bash
     make test mode=html
