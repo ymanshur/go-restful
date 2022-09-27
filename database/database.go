@@ -48,14 +48,7 @@ func Has(db *gorm.DB, model interface{}) bool {
 }
 
 func Drop(db *gorm.DB, models ...interface{}) {
-	for _, model := range models {
-		if err := db.Migrator().DropTable(model); Has(db, model) && err != nil {
-			log.Fatalf("Cannot drop table: %v", err)
-		}
+	if err := db.Migrator().DropTable(models...); err != nil {
+		log.Fatalf("Cannot drop table: %v", err)
 	}
-}
-
-func Seed(db *gorm.DB, models ...interface{}) {
-	Drop(db, models...)
-	Load(db, models...)
 }
