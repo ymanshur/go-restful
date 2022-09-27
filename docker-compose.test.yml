@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  test_db:
+    container_name: go-restful_test_db
+    extends:
+      file: docker-compose.db.yml
+      service: db
+    volumes: 
+      - ./init:/docker-entrypoint-initdb.d
+  
+  test_db_adminer:
+    extends:
+      file: docker-compose.db.yml
+      service: adminer
+    container_name: go-restful_test_db_adminer
