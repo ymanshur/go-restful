@@ -2,17 +2,17 @@ name: Docker CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
+  workflow_dispatch:
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     environment: production
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
     - name: Set up Go
       uses: actions/setup-go@v3
@@ -33,5 +33,5 @@ jobs:
     - name: Test
       run: go test -v ./...
 
-    - name: Build docker image
+    - name: Build Docker image
       run: make build
