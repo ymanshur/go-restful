@@ -25,6 +25,9 @@ WORKDIR /
 
 COPY --from=builder /main .
 
+# Copy env files
+COPY .env .
+
 EXPOSE 8080
 
 ENTRYPOINT ["./main"]
