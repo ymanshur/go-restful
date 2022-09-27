@@ -7,6 +7,7 @@ Notable features:
 - Includes a multi-stage Dockerfile, which actually build Go binaries (minimum app size).
 - Has functional tests for application's business requirements using default Go testing.
 - You need to run database app (MySQL) in your local machine first before up the app docker image
+- You can access the endpoints at https://go-restful.herokuapp.com/
 <!-- - Endpoints documentation was published at  -->
 
 ### Setup
