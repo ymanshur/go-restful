@@ -60,7 +60,7 @@ func (c *controller) SignIn(ctx echo.Context) error {
 	// Validate
 	if user.Email == "" || user.Password == "" {
 		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{
-			"message": constant.ErrReqEmailPassword,
+			"message": constant.ErrReqEmailPassword.Error(),
 		})
 	}
 
@@ -69,7 +69,7 @@ func (c *controller) SignIn(ctx echo.Context) error {
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{
-				"message": constant.ErrCredentialNotMatch,
+				"message": constant.ErrCredentialNotMatch.Error(),
 			})
 		}
 		return ctx.JSON(http.StatusInternalServerError, echo.Map{
