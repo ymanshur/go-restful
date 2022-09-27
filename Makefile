@@ -1,4 +1,10 @@
-IMAGE_TAG=ymanshur/go-restful:latest
+include .env
+
+ifndef APP_VERSION
+	APP_VERSION := latest
+endif
+
+IMAGE_TAG=ymanshur/go-restful:$(APP_VERSION)
 
 run:
 	clear && air
@@ -16,7 +22,7 @@ stop:
 down: stop
 	docker compose down --rmi local --remove-orphans -v 
 build:
-	docker compose build
+	docker build . -t ${IMAGE_TAG}
 push:
 	docker push ${IMAGE_TAG}
 	
