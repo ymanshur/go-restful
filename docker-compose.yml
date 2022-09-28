@@ -7,7 +7,9 @@ services:
     restart: always
     container_name: go-restful
     ports:
-      - ${APP_PORT:-8000}:8000
+      - ${HOST_PORT:-8000}:${PORT:-8000}
+    expose:
+      - ${PORT:-8000}
     environment:
       JWT_SECRET: ${JWT_SECRET:?err}
       DB_USER: ${DB_USER:?err}
@@ -15,12 +17,14 @@ services:
       DB_PORT: ${DB_PORT:-3306}
       DB_HOST: host.docker.internal
       DB_NAME: ${DB_NAME:?err}
+    depends_on:
+      - app_db
 
-  # app_db:
-  #   extends:
-  #     file: docker-compose.db.yml
-  #     service: db
-  #   container_name: go-restful_db
+  app_db:
+    extends:
+      file: docker-compose.db.yml
+      service: db
+    container_name: go-restful_db
 
   # app_db_adminer:
   #   extends:
