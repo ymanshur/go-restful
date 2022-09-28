@@ -21,7 +21,6 @@ jobs:
       - name: Create empty .env file
         # run: |
         #   touch .env
-        #   echo APP_PORT= >> .env
         #   echo DB_USER= >> .env
         #   echo DB_PASS= >> .env
         #   echo DB_HOST= >> .env
