@@ -1,1 +1,1 @@
-CREATE DATABASE IF NOT EXISTS `agmc_test`;
+CREATE DATABASE IF NOT EXISTS `go_restful_test`;
