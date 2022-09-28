@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"go-restful/internal/factory"
 	"go-restful/internal/http"
 	"go-restful/pkg/constant"
@@ -29,5 +30,5 @@ func main() {
 	http.New(e.Group("/api"), f)
 
 	// Start server
-	e.Logger.Fatal(e.Start("127.0.0.1:" + constant.Env.Get("PORT", "8000")))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", constant.Env.Get("PORT", "8000"))))
 }
