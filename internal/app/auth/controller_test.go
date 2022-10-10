@@ -6,7 +6,7 @@ import (
 	"go-restful/internal/app/dto"
 	mock_repository "go-restful/internal/mocks/repository"
 	"go-restful/internal/model"
-	"go-restful/pkg/util"
+	"go-restful/pkg/util/validator"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -31,7 +31,7 @@ func NewMockRepository(t *testing.T) *mock_repository.MockUser {
 func TestSignUpSuccess(t *testing.T) {
 	// Setup
 	e := echo.New()
-	e.Validator = util.NewValidator()
+	e.Validator = validator.New()
 	payload := dto.CreateUserRequest{
 		User: model.User{
 			Name:     "Fityah Salamah",
@@ -60,7 +60,7 @@ func TestSignUpSuccess(t *testing.T) {
 func TestSignUpUnprocessableEntity(t *testing.T) {
 	// Setup
 	e := echo.New()
-	e.Validator = util.NewValidator()
+	e.Validator = validator.New()
 	payload := dto.CreateUserRequest{
 		User: model.User{
 			Name:     "",
@@ -88,7 +88,7 @@ func TestSignUpUnprocessableEntity(t *testing.T) {
 func TestSignInSuccess(t *testing.T) {
 	// Setup
 	e := echo.New()
-	e.Validator = util.NewValidator()
+	e.Validator = validator.New()
 	payload := dto.AuthSignInRequest{
 		Email:    "fityah.salamah@gmail.com",
 		Password: "1234",

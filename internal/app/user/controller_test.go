@@ -5,6 +5,7 @@ import (
 	"go-restful/internal/model"
 	"go-restful/internal/repository"
 	"go-restful/pkg/util"
+	"go-restful/pkg/util/validator"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -74,7 +75,7 @@ func TestGetInvalidParam(t *testing.T) {
 func TestUpdateSuccess(t *testing.T) {
 	// Setup
 	e := echo.New()
-	e.Validator = util.NewValidator()
+	e.Validator = validator.New()
 	req := httptest.NewRequest(http.MethodPut, baseURL+"/:id", strings.NewReader(
 		`{"name": "Fityah Salamah", "email": "fityahsalamah@gmail.com", "password": "1234"}`,
 	))
@@ -96,7 +97,7 @@ func TestUpdateSuccess(t *testing.T) {
 func TestUpdateBadRequest(t *testing.T) {
 	// Setup
 	e := echo.New()
-	e.Validator = util.NewValidator()
+	e.Validator = validator.New()
 	req := httptest.NewRequest(http.MethodPut, baseURL+"/:id", strings.NewReader(
 		`{"name": "", "email": "fityahsalamah@gmail.com", "password": "1234}`,
 	))

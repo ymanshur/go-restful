@@ -1,4 +1,4 @@
-package util
+package validator
 
 import (
 	"github.com/go-playground/validator/v10"
@@ -13,7 +13,7 @@ type (
 	}
 )
 
-func NewValidator() Validator {
+func New() Validator {
 	return &customValidator{
 		Validator: validator.New(),
 	}
