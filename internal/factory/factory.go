@@ -8,7 +8,7 @@ import (
 )
 
 type Factory struct {
-	UserRepository *repository.User
+	UserRepository repository.User
 }
 
 func NewFactory() *Factory {
@@ -23,6 +23,6 @@ func NewFactory() *Factory {
 	database.Load(userDB, &model.User{})
 
 	return &Factory{
-		repository.NewUserRepository(userDB),
+		repository.NewUser(userDB),
 	}
 }
