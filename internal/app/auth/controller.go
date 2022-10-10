@@ -1,90 +1,93 @@
 package auth
 
 import (
-	"go-restful/internal/factory"
-	"go-restful/internal/model"
+	"errors"
+	"go-restful/internal/app/dto"
+	"go-restful/internal/pkg/util"
 	"go-restful/internal/repository"
-	"go-restful/pkg/constant"
+	res "go-restful/pkg/util/response"
 	"net/http"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
-type controller struct {
-	repo *repository.User
+type (
+	Controller interface {
+		SignUp(ctx echo.Context) error
+		SignIn(ctx echo.Context) error
+
+		Route(g *echo.Group)
+	}
+	controller struct {
+		repo repository.User
+	}
+)
+
+func NewController(r repository.User) Controller {
+	return &controller{
+		repo: r,
+	}
 }
 
 func (c *controller) SignUp(ctx echo.Context) error {
-	// Bind
-	user := new(model.User)
-	if err := ctx.Bind(user); err != nil {
-		return ctx.JSON(http.StatusBadRequest, echo.Map{
-			"message": err.Error(),
-		})
+	payload := new(dto.CreateUserRequest)
+	if err := ctx.Bind(payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(ctx)
 	}
 
-	// Validate
-	if err := ctx.Validate(user); err != nil {
-		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{
-			"message": err.Error(),
-		})
+	if err := ctx.Validate(payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.UnprocessableEntity, err).Send(ctx)
 	}
 
-	// Create user
-	createdUser, err := c.repo.Save(user)
-	if err != nil {
-		errorMessage := err.Error()
-		if strings.Contains(errorMessage, "Duplicate entry") {
-			return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{
-				"message": errorMessage,
-			})
-		}
-		return ctx.JSON(http.StatusInternalServerError, echo.Map{
-			"message": errorMessage,
-		})
+	if err := c.repo.Save(payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err)
 	}
 
-	return ctx.JSON(http.StatusOK, echo.Map{
-		"message": "success create new user",
-		"data":    createdUser,
-	})
+	return res.CustomSuccessBuilder(
+		http.StatusOK, nil, "thanks for registering",
+	).Send(ctx)
 }
 
 func (c *controller) SignIn(ctx echo.Context) error {
-	// Bind
-	user := new(model.User)
-	ctx.Bind(&user)
-
-	// Validate
-	if user.Email == "" || user.Password == "" {
-		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{
-			"message": constant.ErrReqEmailPassword.Error(),
-		})
+	payload := new(dto.AuthSignInRequest)
+	if err := ctx.Bind(&payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(ctx)
 	}
 
-	// Find user
-	loggedInUser, err := c.repo.FindByEmailPassword(user)
+	if err := ctx.Validate(payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.UnprocessableEntity, err)
+	}
+
+	// Find user by email
+	user, err := c.repo.FindByEmail(&payload.Email)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{
-				"message": constant.ErrCredentialNotMatch.Error(),
-			})
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return res.ErrorBuilder(&res.ErrorConstant.NotFound, err).Send(ctx)
 		}
-		return ctx.JSON(http.StatusInternalServerError, echo.Map{
-			"message": err.Error(),
-		})
+		return res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err).Send(ctx)
 	}
 
-	return ctx.JSON(http.StatusOK, echo.Map{
-		"message": "success logged in",
-		"data":    loggedInUser,
-	})
-}
-
-func NewController(f *factory.Factory) *controller {
-	return &controller{
-		repo: f.UserRepository,
+	// Matching password
+	if payload.Password != user.Password {
+		return res.ErrorBuilder(&res.ErrorConstant.EmailOrPasswordIncorrect, err)
 	}
+
+	// Create JWT token
+	token, err := util.CreateJwt(user)
+	if err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err).Send(ctx)
+	}
+
+	return res.CustomSuccessBuilder(
+		http.StatusOK,
+		dto.UserWithTokenResponse{
+			UserResponse: dto.UserResponse{
+				Name:  user.Name,
+				Email: user.Email,
+			},
+			Token: token,
+		},
+		"success logged in",
+	).Send(ctx)
 }
