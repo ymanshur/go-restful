@@ -1,11 +1,10 @@
 package user
 
 import (
-	"go-restful/internal/model"
+	"go-restful/internal/dto"
 	"go-restful/internal/repository"
-	"go-restful/pkg/constant"
+	res "go-restful/pkg/util/response"
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -30,98 +29,90 @@ func NewController(r repository.User) *controller {
 }
 
 func (c *controller) Get(ctx echo.Context) error {
-	// Validate parameter
-	userId, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, echo.Map{
-			"message": constant.ErrInvalidUrlParam.Error(),
-		})
+	payload := new(dto.ByIDRequest)
+	if err := ctx.Bind(payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(ctx)
 	}
 
-	// Get user
-	user, err := c.repo.FindById(uint(userId))
+	if err := ctx.Validate(payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.ValidationError, err).Send(ctx)
+	}
+
+	user, err := c.repo.FindById(payload.ID)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return ctx.JSON(http.StatusNotFound, echo.Map{
-				"message": err.Error(),
-			})
+			return res.ErrorBuilder(&res.ErrorConstant.NotFound, err).Send(ctx)
 		}
-		return ctx.JSON(http.StatusInternalServerError, echo.Map{
-			"message": err.Error(),
-		})
+		return res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err).Send(ctx)
 	}
 
-	return ctx.JSON(http.StatusOK, echo.Map{
-		"message": "success get a user",
-		"data":    user,
-	})
+	return res.CustomSuccessBuilder(
+		http.StatusOK, user, "success get a user",
+	).Send(ctx)
 }
 
 func (c *controller) Update(ctx echo.Context) error {
-	// Validate parameter
-	userId, err := strconv.Atoi(ctx.Param("id"))
+	payload := new(dto.UpdateUserRequest)
+	if err := ctx.Bind(payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(ctx)
+	}
+
+	if err := ctx.Validate(payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.ValidationError, err).Send(ctx)
+	}
+
+	user, err := c.repo.FindById(payload.ID)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, echo.Map{
-			"message": constant.ErrInvalidUrlParam.Error(),
-		})
+		if err == gorm.ErrRecordNotFound {
+			return res.ErrorBuilder(&res.ErrorConstant.NotFound, err).Send(ctx)
+		}
+		return res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err).Send(ctx)
 	}
 
-	// Bind
-	user := new(model.User)
-	ctx.Bind(&user)
-
-	// Validate
-	if err := ctx.Validate(user); err != nil {
-		return ctx.JSON(http.StatusUnprocessableEntity, echo.Map{
-			"message": err.Error(),
-		})
-	}
-
-	// Update user
-	updatedUser, err := c.repo.UpdateById(uint(userId), user)
+	updatedUser, err := c.repo.UpdateById(user, payload)
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, echo.Map{
-			"message": err.Error(),
-		})
+		return res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err).Send(ctx)
 	}
 
-	return ctx.JSON(http.StatusOK, echo.Map{
-		"message": "success update a user",
-		"data":    updatedUser,
-	})
+	return res.CustomSuccessBuilder(
+		http.StatusOK, updatedUser, "success update a user",
+	).Send(ctx)
 }
 
 func (c *controller) Delete(ctx echo.Context) error {
-	// Validate parameter
-	userId, err := strconv.Atoi(ctx.Param("id"))
+	payload := new(dto.ByIDRequest)
+	if err := ctx.Bind(payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.BadRequest, err).Send(ctx)
+	}
+
+	if err := ctx.Validate(payload); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.ValidationError, err).Send(ctx)
+	}
+
+	isExist, err := c.repo.ExistById(payload.ID)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, echo.Map{
-			"message": constant.ErrInvalidUrlParam.Error(),
-		})
+		return res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err).Send(ctx)
+	}
+	if !isExist {
+		return res.ErrorBuilder(&res.ErrorConstant.NotFound, err).Send(ctx)
 	}
 
-	// Delete user
-	if err := c.repo.DeleteById(uint(userId)); err != nil {
-		return ctx.JSON(http.StatusInternalServerError, echo.Map{
-			"message": err.Error(),
-		})
+	if err := c.repo.DeleteById(payload.ID); err != nil {
+		return res.ErrorBuilder(&res.ErrorConstant.NotFound, err).Send(ctx)
 	}
 
-	return ctx.JSON(http.StatusOK, echo.Map{
-		"message": "success delete a user",
-	})
+	return res.CustomSuccessBuilder(
+		http.StatusOK, nil, "success delete a user",
+	).Send(ctx)
 }
 
 func (c *controller) GetAll(ctx echo.Context) error {
 	users, err := c.repo.FindAll()
 	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, echo.Map{
-			"message": err.Error(),
-		})
+		return res.ErrorBuilder(&res.ErrorConstant.InternalServerError, err).Send(ctx)
 	}
 
-	return ctx.JSON(http.StatusOK, echo.Map{
-		"message": "success get all users",
-		"data":    users,
-	})
+	return res.CustomSuccessBuilder(
+		http.StatusOK, users, "success get all users",
+	).Send(ctx)
 }
