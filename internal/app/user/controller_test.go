@@ -12,7 +12,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
@@ -75,7 +74,7 @@ func TestGetInvalidParam(t *testing.T) {
 func TestUpdateSuccess(t *testing.T) {
 	// Setup
 	e := echo.New()
-	e.Validator = &util.CustomValidator{Validator: validator.New()}
+	e.Validator = util.NewValidator()
 	req := httptest.NewRequest(http.MethodPut, baseURL+"/:id", strings.NewReader(
 		`{"name": "Fityah Salamah", "email": "fityahsalamah@gmail.com", "password": "1234"}`,
 	))
@@ -97,7 +96,7 @@ func TestUpdateSuccess(t *testing.T) {
 func TestUpdateBadRequest(t *testing.T) {
 	// Setup
 	e := echo.New()
-	e.Validator = &util.CustomValidator{Validator: validator.New()}
+	e.Validator = util.NewValidator()
 	req := httptest.NewRequest(http.MethodPut, baseURL+"/:id", strings.NewReader(
 		`{"name": "", "email": "fityahsalamah@gmail.com", "password": "1234}`,
 	))

@@ -11,7 +11,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/golang/mock/gomock"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
@@ -32,7 +31,7 @@ func NewMockRepository(t *testing.T) *mock_repository.MockUser {
 func TestSignUpSuccess(t *testing.T) {
 	// Setup
 	e := echo.New()
-	e.Validator = &util.CustomValidator{Validator: validator.New()}
+	e.Validator = util.NewValidator()
 	payload := dto.CreateUserRequest{
 		User: model.User{
 			Name:     "Fityah Salamah",
@@ -61,7 +60,7 @@ func TestSignUpSuccess(t *testing.T) {
 func TestSignUpUnprocessableEntity(t *testing.T) {
 	// Setup
 	e := echo.New()
-	e.Validator = &util.CustomValidator{Validator: validator.New()}
+	e.Validator = util.NewValidator()
 	payload := dto.CreateUserRequest{
 		User: model.User{
 			Name:     "",
@@ -89,7 +88,7 @@ func TestSignUpUnprocessableEntity(t *testing.T) {
 func TestSignInSuccess(t *testing.T) {
 	// Setup
 	e := echo.New()
-	e.Validator = &util.CustomValidator{Validator: validator.New()}
+	e.Validator = util.NewValidator()
 	payload := dto.AuthSignInRequest{
 		Email:    "fityah.salamah@gmail.com",
 		Password: "1234",

@@ -7,7 +7,6 @@ import (
 	"go-restful/pkg/constant"
 	"go-restful/pkg/util"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -24,7 +23,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// Register validator
-	e.Validator = &util.CustomValidator{Validator: validator.New()}
+	e.Validator = util.NewValidator()
 
 	f := factory.NewFactory()
 	http.New(e.Group("/api"), f)
