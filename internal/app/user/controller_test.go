@@ -2,7 +2,6 @@ package user
 
 import (
 	"go-restful/database"
-	"go-restful/internal/factory"
 	"go-restful/internal/model"
 	"go-restful/internal/repository"
 	"go-restful/pkg/util"
@@ -28,8 +27,8 @@ var (
 		Port:     env.Get("DB_PORT", ""),
 		Name:     env.Get("DB_NAME", ""),
 	})
-	f        = factory.Factory{UserRepository: repository.NewUserRepository(db)}
-	c        = NewController(&f)
+	r        = repository.NewUser(db)
+	c        = NewController(r)
 	mockData = []model.User{
 		{
 			Name:     "Fityah Salamah",
