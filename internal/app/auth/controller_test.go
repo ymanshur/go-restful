@@ -3,7 +3,7 @@ package auth
 import (
 	"bytes"
 	"encoding/json"
-	"go-restful/internal/app/dto"
+	"go-restful/internal/dto"
 	mock_repository "go-restful/internal/mocks/repository"
 	"go-restful/internal/model"
 	"go-restful/pkg/util/validator"
@@ -48,7 +48,7 @@ func TestSignUpSuccess(t *testing.T) {
 	rec := httptest.NewRecorder()
 	ctx := e.NewContext(req, rec)
 	mockR := NewMockRepository(t)
-	mockR.EXPECT().Save(&payload).Return(nil)
+	mockR.EXPECT().Save(payload).Return(nil)
 	mockC := NewController(mockR)
 
 	// Assertions

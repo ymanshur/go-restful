@@ -2,7 +2,7 @@ package auth
 
 import (
 	"errors"
-	"go-restful/internal/app/dto"
+	"go-restful/internal/dto"
 	"go-restful/internal/pkg/util"
 	"go-restful/internal/repository"
 	res "go-restful/pkg/util/response"
