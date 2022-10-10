@@ -9,6 +9,6 @@ import (
 )
 
 func New(g *echo.Group, f *factory.Factory) {
-	user.NewController(f).Route(g.Group("/users"))
-	auth.NewController(f).Route(g.Group("/auth"))
+	user.NewController(f.UserRepository).Route(g.Group("/users"))
+	auth.NewController(f.UserRepository).Route(g.Group("/auth"))
 }
