@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"go-restful/internal/app/dto"
+	"go-restful/internal/dto"
 	"go-restful/internal/model"
 
 	"gorm.io/gorm"
@@ -11,23 +11,24 @@ type (
 	User interface {
 		Save(payload *dto.CreateUserRequest) error
 		FindById(userId uint) (*model.User, error)
-		UpdateById(userId uint, user *model.User) (*model.User, error)
+		ExistById(userId uint) (bool, error)
+		UpdateById(user *model.User, payload *dto.UpdateUserRequest) (*model.User, error)
 		DeleteById(userId uint) error
 		FindAll() ([]*model.User, error)
 		FindByEmail(email *string) (*model.User, error)
 	}
-	userRepo struct {
+	user struct {
 		db *gorm.DB
 	}
 )
 
 func NewUser(db *gorm.DB) User {
-	return &userRepo{
+	return &user{
 		db,
 	}
 }
 
-func (u *userRepo) Save(payload *dto.CreateUserRequest) error {
+func (u *user) Save(payload *dto.CreateUserRequest) error {
 	newUser := model.User{
 		Name:     payload.Name,
 		Email:    payload.Email,
@@ -39,7 +40,7 @@ func (u *userRepo) Save(payload *dto.CreateUserRequest) error {
 	return nil
 }
 
-func (u *userRepo) FindById(userId uint) (*model.User, error) {
+func (u *user) FindById(userId uint) (*model.User, error) {
 	user := new(model.User)
 	if err := u.db.Omit("password").Where(model.User{ID: userId}).Take(&user).Error; err != nil {
 		return nil, err
@@ -47,26 +48,33 @@ func (u *userRepo) FindById(userId uint) (*model.User, error) {
 	return user, nil
 }
 
-func (u *userRepo) UpdateById(userId uint, user *model.User) (*model.User, error) {
-	if err := u.db.Model(&model.User{ID: userId}).Updates(&user).Error; err != nil {
-		return nil, err
+func (u *user) ExistById(userId uint) (bool, error) {
+	var count int64
+	if err := u.db.Where(model.User{ID: userId}).Count(&count).Error; err != nil {
+		return false, err
 	}
+	if count > 0 {
+		return true, nil
+	}
+	return false, nil
+}
 
+func (u *user) UpdateById(user *model.User, payload *dto.UpdateUserRequest) (*model.User, error) {
 	updatedUser := new(model.User)
-	if err := u.db.Omit("password").Find(&updatedUser, userId).Error; err != nil {
+	if err := u.db.Model(&user).Omit("password").Updates(&payload).Take(&updatedUser).Error; err != nil {
 		return nil, err
 	}
 	return updatedUser, nil
 }
 
-func (u *userRepo) DeleteById(userId uint) error {
-	if err := u.db.Delete(&model.User{}, userId).Error; err != nil {
+func (u *user) DeleteById(userId uint) error {
+	if err := u.db.Delete(&model.User{ID: userId}).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *userRepo) FindAll() ([]*model.User, error) {
+func (u *user) FindAll() ([]*model.User, error) {
 	var users []*model.User
 	if err := u.db.Omit("password").Find(&users).Error; err != nil {
 		return nil, err
@@ -74,7 +82,7 @@ func (u *userRepo) FindAll() ([]*model.User, error) {
 	return users, nil
 }
 
-func (u *userRepo) FindByEmail(email *string) (*model.User, error) {
+func (u *user) FindByEmail(email *string) (*model.User, error) {
 	user := new(model.User)
 	if err := u.db.
 		Omit("password").Where("email = ?", email).

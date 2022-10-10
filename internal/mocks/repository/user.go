@@ -5,7 +5,7 @@
 package mock_repository
 
 import (
-	dto "go-restful/internal/app/dto"
+	dto "go-restful/internal/dto"
 	model "go-restful/internal/model"
 	reflect "reflect"
 
@@ -47,6 +47,21 @@ func (m *MockUser) DeleteById(userId uint) error {
 func (mr *MockUserMockRecorder) DeleteById(userId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteById", reflect.TypeOf((*MockUser)(nil).DeleteById), userId)
+}
+
+// ExistById mocks base method.
+func (m *MockUser) ExistById(userId uint) (bool, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExistById", userId)
+	ret0, _ := ret[0].(bool)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ExistById indicates an expected call of ExistById.
+func (mr *MockUserMockRecorder) ExistById(userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExistById", reflect.TypeOf((*MockUser)(nil).ExistById), userId)
 }
 
 // FindAll mocks base method.
@@ -109,16 +124,16 @@ func (mr *MockUserMockRecorder) Save(payload interface{}) *gomock.Call {
 }
 
 // UpdateById mocks base method.
-func (m *MockUser) UpdateById(userId uint, user *model.User) (*model.User, error) {
+func (m *MockUser) UpdateById(user *model.User, payload *dto.UpdateUserRequest) (*model.User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateById", userId, user)
+	ret := m.ctrl.Call(m, "UpdateById", user, payload)
 	ret0, _ := ret[0].(*model.User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateById indicates an expected call of UpdateById.
-func (mr *MockUserMockRecorder) UpdateById(userId, user interface{}) *gomock.Call {
+func (mr *MockUserMockRecorder) UpdateById(user, payload interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateById", reflect.TypeOf((*MockUser)(nil).UpdateById), userId, user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateById", reflect.TypeOf((*MockUser)(nil).UpdateById), user, payload)
 }

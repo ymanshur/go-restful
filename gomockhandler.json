@@ -2,7 +2,7 @@
 	"mocks": {
 		"D:\\Hack!\\alterra\\go-restful\\internal\\mocks\\factory\\factory.go": {
 			"checksum": "O9G7N9b2ZiqcYFtyJ4BGig==",
-			"source_checksum": "kGg+tQM0zCvJFDyBK731VA==",
+			"source_checksum": "GHEFXqDdtrH1+Ob8rzMuBw==",
 			"mode": "SOURCE_MODE",
 			"source_mode_runner": {
 				"source": "D:\\Hack!\\alterra\\go-restful\\internal\\factory\\factory.go",
@@ -10,8 +10,8 @@
 			}
 		},
 		"D:\\Hack!\\alterra\\go-restful\\internal\\mocks\\repository\\user.go": {
-			"checksum": "30/YAyO9nEls5XhLouJ0wQ==",
-			"source_checksum": "CMqxlKOgIcB4vL5VRu5V4Q==",
+			"checksum": "p/OKUXC5iPPs9KCQf8xLvA==",
+			"source_checksum": "MFrglWTDU9tlAWkyLUl6pw==",
 			"mode": "SOURCE_MODE",
 			"source_mode_runner": {
 				"source": "D:\\Hack!\\alterra\\go-restful\\internal\\repository\\user.go",
