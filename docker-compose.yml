@@ -8,8 +8,6 @@ services:
     container_name: go-restful
     ports:
       - ${HOST_PORT:-8000}:${PORT:-8000}
-    expose:
-      - ${PORT:-8000}
     environment:
       JWT_SECRET: ${JWT_SECRET:?err}
       DB_USER: ${DB_USER:?err}
@@ -26,8 +24,8 @@ services:
       service: db
     container_name: go-restful_db
 
-  # app_db_adminer:
-  #   extends:
-  #     file: docker-compose.db.yml
-  #     service: adminer
-  #   container_name: go-restful_db_adminer
+  app_db_adminer:
+    extends:
+      file: docker-compose.db.yml
+      service: adminer
+    container_name: go-restful_db_adminer
