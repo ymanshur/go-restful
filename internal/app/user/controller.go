@@ -1,7 +1,6 @@
 package user
 
 import (
-	"go-restful/internal/factory"
 	"go-restful/internal/model"
 	"go-restful/internal/repository"
 	"go-restful/pkg/constant"
@@ -12,8 +11,22 @@ import (
 	"gorm.io/gorm"
 )
 
-type controller struct {
-	repo *repository.User
+type (
+	Controller interface {
+		Get(ctx echo.Context) error
+		Update(ctx echo.Context) error
+		Delete(ctx echo.Context) error
+		GetAll(ctx echo.Context) error
+	}
+	controller struct {
+		repo repository.User
+	}
+)
+
+func NewController(r repository.User) *controller {
+	return &controller{
+		repo: r,
+	}
 }
 
 func (c *controller) Get(ctx echo.Context) error {
@@ -111,10 +124,4 @@ func (c *controller) GetAll(ctx echo.Context) error {
 		"message": "success get all users",
 		"data":    users,
 	})
-}
-
-func NewController(f *factory.Factory) *controller {
-	return &controller{
-		repo: f.UserRepository,
-	}
 }
