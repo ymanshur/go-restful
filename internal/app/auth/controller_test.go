@@ -48,7 +48,7 @@ func TestSignUpSuccess(t *testing.T) {
 	rec := httptest.NewRecorder()
 	ctx := e.NewContext(req, rec)
 	mockR := NewMockRepository(t)
-	mockR.EXPECT().Save(payload).Return(nil)
+	mockR.EXPECT().Save(&payload).Return(nil)
 	mockC := NewController(mockR)
 
 	// Assertions
