@@ -45,8 +45,7 @@ func TestGetSuccess(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, baseURL+"/:id", nil)
 	rec := httptest.NewRecorder()
 	ctx := e.NewContext(req, rec)
-	ctx.SetParamNames("id")
-	ctx.SetParamValues("1")
+	ctx.QueryParams().Add("id", "1")
 	defer database.Drop(db, model.User{})
 	database.Load(db, model.User{})
 	db.Create(&mockData)
@@ -63,8 +62,7 @@ func TestGetInvalidParam(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, baseURL+"/:id", nil)
 	rec := httptest.NewRecorder()
 	ctx := e.NewContext(req, rec)
-	ctx.SetParamNames("id")
-	ctx.SetParamValues("a")
+	ctx.QueryParams().Add("id", "a")
 
 	// Assertions
 	if assert.NoError(t, c.Get(ctx)) {
