@@ -1,20 +1,19 @@
 ## GO RESTFUL APP
 
-The day 8 & 10 AGMC (by [Alterra](https://www.alterra.id/)) submission project.
+A simple RESTful API using Go. Intended for AGMC (by [Alterra](https://www.alterra.id/)) final project.
 
 Notable features:
 
-- Includes a multi-stage Dockerfile, which actually build Go binaries (minimum app size).
-- Has functional tests for application's business requirements using default Go testing.
-- You need to run database app (MySQL) in your local machine first before up the app docker image
-- You can access the endpoints at https://go-restful.herokuapp.com/
+- Includes a multi-stage Dockerfile, which builds Go binaries (minimum app size).
+- Has functional tests for the application's business requirements using default Go testing.
+- You need to run the database app (MySQL) on your local machine first before up the app docker image
 <!-- - Endpoints documentation was published at  -->
 
 ### Setup
 
 1. Create `.env` config file, look at [.env.example](./.env.example) for mandatory _key-value_
 
-2. Build app using `docker`
+2. Build an app using `docker`
 
     ```bash
     docker build -t <your_tag> .
@@ -49,9 +48,9 @@ Notable features:
     ```
 
     Note:
-    - `host.docker.internal` means app will access your local machine host
+    - `host.docker.internal` means the app will access your local machine host
 
-3. You can _up_ existing db image such as mysql (officialy exist at Github Hub registry) and use it for database, but its optional. You can write your own service or extend from [docker-compose.db.yml](docker-compose.db.yml).
+3. You can _up_ existing DB image, such as MySQL (officially exists at GitHub Hub registry) and use it for the database, but it's optional. You can write your service or extend from [docker-compose.db.yml](docker-compose.db.yml).
 
     ```
     app_db:
@@ -61,7 +60,7 @@ Notable features:
         container_name: go-restful_db
     ```
 
-    and if you need lite version of phpMyAdmin just add following service
+    and if you need a lite version of phpMyAdmin, just add the following service
 
     ```
     app_db_adminer:
@@ -71,7 +70,7 @@ Notable features:
         container_name: go-restful_db_adminer
     ```
 
-4. Run app using docker-compose
+4. Run the app using docker-compose
 
     ```bash
     docker-compose up -d
@@ -83,19 +82,19 @@ Notable features:
 
 - Firstly, you should create `.env.test` file (see [.env.test.example](.env.test.example) for mandatory _key-value_).
 
-- If you have not database in you machine, you can use containerized database for testing by run following command.
+- If you don't have a database on your machine, you can use containerized database for testing by run following command.
 
     ```bash
     docker compose -f docker-compose.test.yml --env-file .env.test up -d
     ```
 
-- Do functional test using following command
+- Do a functional test using the following command
 
     ```bash
     make test
     ```
 
-    To show in html mode, use
+    To show in HTML mode, use
 
     ```bash
     make test mode=html
